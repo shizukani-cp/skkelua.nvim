@@ -1,6 +1,7 @@
 skkelua is distributed under the zlib license.
 
-It is a Lua port of skkeleton (https://github.com/vim-skk/skkeleton):
+It is a modified fork of skkelua (https://github.com/kjuq/skkelua.nvim),
+which is a Lua port of skkeleton (https://github.com/vim-skk/skkeleton):
   Copyright (c) 2021 kuuote
 
 The built-in mode indicator (lua/skkelua/indicator.lua) is based on
