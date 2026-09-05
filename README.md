@@ -1,12 +1,13 @@
 # skkelua.nvim
 
-<img width="640" height="355" alt="demo" src="https://github.com/user-attachments/assets/03a07620-4db7-495a-a526-f8b9f406fef7" />
-
 Neovim 専用の SKK 日本語入力環境です。pure Lua で実装されており、
 Neovim 組み込みの Lua ランタイムだけで動作します。
 
 [skkeleton](https://github.com/vim-skk/skkeleton) (denops/Deno 製) を参考に
 作られた独立のプラグインで、モードインジケータも内蔵しています。
+
+※このリポジトリは[kjuq/skkelua.nvim](https://github.com/kjuq/skkelua.nvim)をforkし、
+未確定文字列を直接バッファに送らないようにしたものです。
 
 ## Requirements
 
@@ -22,7 +23,7 @@ denops.vim / Deno は不要です。
 ```lua
 -- lazy.nvim
 {
-	"kjuq/skkelua.nvim",
+	"shizukani-cp/skkelua.nvim",
 	config = function()
 		require("skkelua").config({
 			globalDictionaries = { "~/.skk/SKK-JISYO.L" },
@@ -172,6 +173,7 @@ zlib license
 
 ## Credits
 
+- このリポジトリは[kjuq/skkelua.nvim](https://github.com/kjuq/skkelua.nvim)のforkです
 - 変換エンジンは [vim-skk/skkeleton](https://github.com/vim-skk/skkeleton)
   (Copyright (c) 2021 kuuote, zlib license) の TypeScript 実装を Lua に移植したものです
 - モードインジケータは
