@@ -194,11 +194,8 @@ local function handle_impl(opts, vim_status)
 				selected = vim_status.completeInfo.selected,
 			})
 		end
-		local handled = handle_complete_key(
-			vim_status.completeInfo.selected >= 0,
-			vim_status.completeType,
-			notation_str
-		)
+		local handled =
+			handle_complete_key(vim_status.completeInfo.selected >= 0, vim_status.completeType, notation_str)
 		if type(handled) == "string" then
 			-- [辞書登録] 項目の確定はバッファを変えず、CompleteDone からの
 			-- registerWord が変換入力の続きとして実行されるため状態を保つ
@@ -324,10 +321,11 @@ local function handle_request(func, opts, vim_status)
 	local util = require("skkelua.util")
 	local context = store.get_context()
 	-- 補完の後など preEdit とバッファが不一致している状態の時にリセットする
-	if vim_status.mode ~= "t" and not util.ends_with(vim_status.prevInput, context:to_string()) then
-		require("skkelua.mode").initialize_state_with_abbrev(context, { "converter" })
-		context.preEdit:output("")
-	end
+	-- TODO:復活させる
+	-- if vim_status.mode ~= "t" and not util.ends_with(vim_status.prevInput, context:to_string()) then
+	-- 	require("skkelua.mode").initialize_state_with_abbrev(context, { "converter" })
+	-- 	context.preEdit:output("")
+	-- end
 	if func == "handleKey" then
 		return build_result(handle_impl(opts, vim_status))
 	elseif func == "setState" or func == "enable" then
@@ -386,12 +384,8 @@ function M.handle(func, opts)
 	end
 
 	if result ~= "" then
-		if is_cmd then
-			vim.api.nvim_feedkeys(termcode("<Cmd>") .. result:sub(6) .. termcode("<CR>"), "nit", false)
-		else
-			-- escape_ks=true: UTF-8 文字列に含まれる K_SPECIAL(0x80) をエスケープする
-			vim.api.nvim_feedkeys(result, "nit", true)
-		end
+		-- escape_ks=true: UTF-8 文字列に含まれる K_SPECIAL(0x80) をエスケープする
+		vim.api.nvim_feedkeys(result, "nit", true)
 	end
 end
 
@@ -618,10 +612,7 @@ end
 
 --- deno_kv データベースは Lua 版では非対応
 function M.update_database(_path, _encoding, _force)
-	vim.notify(
-		"skkelua: updateDatabase (deno_kv) is not supported by the lua version",
-		vim.log.levels.WARN
-	)
+	vim.notify("skkelua: updateDatabase (deno_kv) is not supported by the lua version", vim.log.levels.WARN)
 end
 
 --------------------------------------------------------------------

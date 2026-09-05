@@ -14,6 +14,7 @@ function PreEdit.new()
 	return setmetatable({
 		current = "",
 		kakutei = "",
+		ns_id = vim.api.nvim_create_namespace("skkelua_preedit"),
 	}, PreEdit)
 end
 
@@ -36,22 +37,43 @@ function PreEdit:shown()
 	return self.current
 end
 
---- 次の表示状態を受け取り、送出すべきキー列を返す
+--- virtual textとcurrent、kakuteiの内容をクリアする
+function PreEdit:clear()
+	self.current = ""
+	self.kakutei = ""
+
+	local bufnr = 0
+	vim.api.nvim_buf_clear_namespace(bufnr, self.ns_id, 0, -1)
+	local cursor = vim.api.nvim_win_get_cursor(0)
+	local line, col = cursor[1] - 1, cursor[2]
+	vim.api.nvim_buf_set_extmark(bufnr, self.ns_id, line, col, {
+		virt_text = { { self.current, "Search" } },
+		virt_text_pos = "inline",
+	})
+end
+
+--- 次の表示状態を受け取り、表示を行う
 ---@param next_str string
----@return string
 function PreEdit:output(next_str)
-	local ret
-	-- 補完ウィンドウのちらつき防止のため必要のないバックスペースを送らない
-	if self.kakutei == "" and vim.startswith(next_str, self.current) then
-		ret = next_str:sub(#self.current + 1)
-	else
-		-- 書記素クラスタ単位で BS を送る (Intl.Segmenter 相当は strcharlen)
-		local bs_count = self.current == "" and 0 or vim.fn.strcharlen(self.current)
-		ret = ("\b"):rep(bs_count) .. self.kakutei .. next_str
-	end
+	local kakutei_str = self.kakutei -- 確定した文字を保持
+
 	self.current = next_str
 	self.kakutei = ""
-	return ret
+
+	-- Virtual Text の更新
+	local bufnr = 0
+	vim.api.nvim_buf_clear_namespace(bufnr, self.ns_id, 0, -1)
+	if self.current ~= "" then
+		local cursor = vim.api.nvim_win_get_cursor(0)
+		local line, col = cursor[1] - 1, cursor[2]
+		vim.api.nvim_buf_set_extmark(bufnr, self.ns_id, line, col, {
+			virt_text = { { self.current, "Search" } },
+			virt_text_pos = "inline",
+		})
+	end
+
+	-- 確定した文字だけを feedkeys 側に返してバッファへ書き込ませる
+	return kakutei_str
 end
 
 M.PreEdit = PreEdit
