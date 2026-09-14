@@ -1,5 +1,5 @@
 -- 擬似プリエディット (preedit.ts に相当)
--- 現在の文字列の状態を覚えておいて削除命令 (BS) を発行することで
+-- Virtual Text を活用することで
 -- Vim 上に IME の PreEdit を擬似的に実現する
 
 local M = {}
