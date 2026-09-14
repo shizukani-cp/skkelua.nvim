@@ -156,6 +156,9 @@ function M.open(opts)
 	vim.keymap.set({ "i", "n" }, "<Esc>", function()
 		finish(entry, opts.on_cancel)
 	end, { buffer = buf, nowait = true })
+	vim.keymap.set({ "i", "n" }, "<C-g>", function()
+		finish(entry, opts.on_cancel)
+	end, { buffer = buf, nowait = true })
 
 	vim.cmd("startinsert!")
 end
