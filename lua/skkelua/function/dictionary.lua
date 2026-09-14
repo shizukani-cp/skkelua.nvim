@@ -179,8 +179,11 @@ local function register_word_float(context)
 		store.status.phase = saved.mode == "okuriari" and "input:okuriari" or "input:okurinasi"
 		store.status.henkanFeed = saved.henkanFeed
 		-- 表示中の pre-edit を復元後の表示 (通常は同一) へ置き換え、追跡を合わせる
-		replace_pre_edit(ctx:to_string())
 		ctx.preEdit:sync(ctx:to_string())
+		-- 強制的に insert に復帰させる
+		if not vim.fn.mode():match("^i") then
+			vim.cmd("startinsert")
+		end
 		-- タイプを伴わない復元では補完の autotrigger が働かないため、
 		-- キー処理が終わって insert に入ったところで明示的にトリガーする
 		vim.api.nvim_create_autocmd("SafeState", {
