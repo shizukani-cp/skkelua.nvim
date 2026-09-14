@@ -23,41 +23,12 @@ function PreEdit:do_kakutei(str)
 	self.kakutei = self.kakutei .. str
 end
 
---- 表示中テキストの追跡を強制的に合わせる。
---- 補完の選択挿入などで pre-edit がバッファ上で直接置き換えられた
---- 場合に、置き換え後のテキストを削除対象として扱うための再同期用
+--- 次の表示状態を受け取り、表示を行う
 ---@param str string
 function PreEdit:sync(str)
-	self.current = str
-end
-
---- 表示中として追跡しているテキストを返す
----@return string
-function PreEdit:shown()
-	return self.current
-end
-
---- virtual textとcurrent、kakuteiの内容をクリアする
-function PreEdit:clear()
-	self.current = ""
-	self.kakutei = ""
-
-	local bufnr = 0
-	vim.api.nvim_buf_clear_namespace(bufnr, self.ns_id, 0, -1)
-	local cursor = vim.api.nvim_win_get_cursor(0)
-	local line, col = cursor[1] - 1, cursor[2]
-	vim.api.nvim_buf_set_extmark(bufnr, self.ns_id, line, col, {
-		virt_text = { { self.current, "Search" } },
-		virt_text_pos = "inline",
-	})
-end
-
---- 次の表示状態を受け取り、表示を行う
----@param next_str string
-function PreEdit:output(next_str)
 	local kakutei_str = self.kakutei -- 確定した文字を保持
 
-	self.current = next_str
+	self.current = str
 	self.kakutei = ""
 
 	-- Virtual Text の更新
@@ -74,6 +45,23 @@ function PreEdit:output(next_str)
 
 	-- 確定した文字だけを feedkeys 側に返してバッファへ書き込ませる
 	return kakutei_str
+end
+
+--- 表示中として追跡しているテキストを返す
+---@return string
+function PreEdit:shown()
+	return self.current
+end
+
+--- virtual textとcurrent、kakuteiの内容をクリアする
+function PreEdit:clear()
+	self:sync("")
+end
+
+--- 次の表示状態を受け取り、表示を行う
+---@param str string
+function PreEdit:output(next_str)
+	return self:sync(next_str)
 end
 
 M.PreEdit = PreEdit
