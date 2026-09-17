@@ -38,7 +38,7 @@ function PreEdit:sync(str)
 		local cursor = vim.api.nvim_win_get_cursor(0)
 		local line, col = cursor[1] - 1, cursor[2]
 		vim.api.nvim_buf_set_extmark(bufnr, self.ns_id, line, col, {
-			virt_text = { { self.current, "Search" } },
+			virt_text = { { self.current, require("skkelua.config").config.undeterminedHighlightGroup } },
 			virt_text_pos = "inline",
 		})
 	end

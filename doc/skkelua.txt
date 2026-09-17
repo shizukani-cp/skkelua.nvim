@@ -250,6 +250,8 @@ skkServerReqEnc ("euc-jp") / skkServerResEnc ("euc-jp")
 	skkserv の接続設定。
 sources (["skk_dictionary"])
 	辞書ソースのリスト。|skkelua-sources| 参照。
+undeterminedHighlightGroup ("Search")
+	未確定の文字列のハイライトグループ。
 userDictionary (stdpath("data") .. "/skkelua/jisyo")
 	ユーザー辞書のパス。デフォルトは $XDG_DATA_HOME/nvim/skkelua/jisyo
 	(通常 ~/.local/share/nvim/skkelua/jisyo)。保存時にディレクトリは

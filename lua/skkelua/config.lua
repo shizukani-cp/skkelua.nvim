@@ -105,6 +105,7 @@ M.config = {
 	skkServerReqEnc = "euc-jp",
 	skkServerResEnc = "euc-jp",
 	sources = { "skk_dictionary" },
+	undeterminedHighlightGroup = "Search",
 	-- $XDG_DATA_HOME/nvim/skkelua/jisyo (stdpath が ~/.local/share への
 	-- フォールバックを内蔵している)
 	userDictionary = vim.fs.joinpath(vim.fn.stdpath("data") --[[@as string]], "skkelua", "jisyo"),
@@ -149,8 +150,7 @@ local function ensure_path_list(name)
 			error(("'%s' must be array of two string tuple"):format(name))
 		end
 		for _, v in ipairs(x) do
-			local ok = type(v) == "string"
-				or (type(v) == "table" and type(v[1]) == "string" and type(v[2]) == "string")
+			local ok = type(v) == "string" or (type(v) == "table" and type(v[1]) == "string" and type(v[2]) == "string")
 			if not ok then
 				error(("'%s' must be array of two string tuple"):format(name))
 			end
@@ -248,6 +248,11 @@ local validators = {
 			end
 		end
 		return x
+	end,
+	undeterminedHighlightGroup = function(name)
+		if vim.fn.hlexists(name) then
+			return name
+		end
 	end,
 	useGoogleJapaneseInput = function()
 		error('`useGoogleJapaneseInput` is removed. Please use `sources` with "google_japanese_input"')
